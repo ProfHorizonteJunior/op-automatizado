@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- fundo arredondado com cor da categoria AWS -->
+  <rect x="2" y="2" width="60" height="60" rx="10" fill="#5A5A5A"/>
+  <!-- símbolo central em branco -->
+  
+  <rect x="8" y="10" width="48" height="30" rx="3" fill="none"
+        stroke="white" stroke-width="2.5"/>
+  <line x1="8" y1="32" x2="56" y2="32" stroke="white" stroke-width="2"/>
+  <rect x="22" y="40" width="20" height="5" rx="1" fill="white"/>
+  <rect x="16" y="45" width="32" height="4" rx="1" fill="white" opacity="0.8"/>
+  <!-- rótulo curto na base (visível no hover / zoom) -->
+  <text x="32" y="59" font-family="Arial,sans-serif" font-size="7"
+        text-anchor="middle" fill="white" opacity="0.85">Frontend</text>
+</svg>

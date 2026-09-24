@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- fundo arredondado com cor da categoria AWS -->
+  <rect x="2" y="2" width="60" height="60" rx="10" fill="#5A5A5A"/>
+  <!-- símbolo central em branco -->
+  
+  <circle cx="32" cy="20" r="11" fill="none" stroke="white" stroke-width="2.5"/>
+  <path d="M10 52 C10 36 54 36 54 52" fill="none" stroke="white" stroke-width="2.5"/>
+  <!-- rótulo curto na base (visível no hover / zoom) -->
+  <text x="32" y="59" font-family="Arial,sans-serif" font-size="7"
+        text-anchor="middle" fill="white" opacity="0.85">Professor</text>
+</svg>

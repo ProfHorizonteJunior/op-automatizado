@@ -1,6 +1,99 @@
 nome: plataforma-educacional
 titulo: Plataforma educacional com agente IA e sistema de chamados colaborativos
 
+product:
+  descricao: >
+    SaaS educacional B2B voltado para instituições de ensino técnico e superior.
+    Professores configuram o conteúdo por unidade curricular; alunos aprendem
+    com um agente IA que guia o PDI sem entregar respostas prontas. Um sistema
+    de chamados peer-to-peer incentivado por moedas digitais complementa o ciclo
+    de aprendizagem colaborativa.
+  usuarios_alvo:
+    - Estudantes de cursos técnicos e superiores de tecnologia
+    - Professores e coordenadores pedagógicos
+  problema_core: >
+    Estudantes travam em exercícios e não recebem orientação personalizada a tempo;
+    professores não têm visibilidade sobre o progresso real de cada aluno.
+  proposta_de_valor:
+    - Agente IA que conhece o plano de aula e orienta sem dar o código pronto
+    - PDI automatizado por aluno baseado no histórico de interações
+    - Chamados colaborativos com incentivo gamificado (moedas) validados pelo professor
+    - Painel administrativo com visibilidade total do engajamento e progresso
+
+tech:
+  frontend:
+    framework: Next.js 14 (App Router)
+    linguagem: TypeScript
+    ui: Tailwind CSS + shadcn/ui
+    estado: Zustand
+    justificativa: >
+      SSR nativo para páginas públicas, rotas de API integradas e boa DX para
+      wizard multi-step. shadcn/ui acelera prototipagem sem lock-in de design system.
+
+  backend:
+    runtime: Node.js 20 (AWS Lambda)
+    linguagem: TypeScript
+    framework: Fastify (lambdas via adapter) ou AWS Lambda direto
+    orm: Drizzle ORM
+    justificativa: >
+      Lambdas mantêm custo proporcional ao uso real; Drizzle gera queries tipadas
+      sem overhead de ORM pesado.
+
+  agente_ia:
+    orquestrador: LangChain.js (ou Amazon Bedrock Agents)
+    llm: Amazon Bedrock (Claude 3 Sonnet / Haiku)
+    rag: Amazon OpenSearch Serverless (vetor) + PDFs indexados via LangChain
+    guardrail: Amazon Bedrock Guardrails (bloco de geração de código)
+    justificativa: >
+      Bedrock mantém os dados dentro da AWS; Guardrails nativos eliminam a necessidade
+      de lógica manual de bloqueio; OpenSearch Serverless escala sem gestão de cluster.
+
+  banco_de_dados:
+    principal: Amazon RDS for PostgreSQL (Multi-AZ para produção)
+    migrações: Drizzle Kit
+    justificativa: >
+      PostgreSQL suporta JSONB para histórico de chat flexível e tem suporte nativo
+      a row-level security útil para isolamento por turma.
+
+  armazenamento:
+    pdfs: Amazon S3 (upload via presigned URL)
+    icones_estaticos: Amazon S3 + CloudFront
+
+  autenticacao:
+    servico: Amazon Cognito (User Pools)
+    fluxo: JWT (access token + refresh token)
+    perfis:
+      - estudante
+      - professor
+
+  agendador:
+    servico: Amazon EventBridge Scheduler
+    job: Verifica chamados com expiração de 4h e devolve à fila (cron a cada 15 min)
+
+  infraestrutura:
+    iac: AWS CDK (TypeScript)
+    ci_cd: GitHub Actions
+    ambiente_dev: LocalStack (emulação local de S3, SQS, Cognito)
+
+structure:
+  raiz:
+    - README.md
+    - package.json          # monorepo com workspaces
+    - turbo.json            # Turborepo para build incremental
+    - .github/
+  apps:
+    - apps/web/             # Next.js 14 — frontend
+    - apps/api/             # Fastify + Lambda handlers
+  packages:
+    - packages/db/          # schema Drizzle + migrações
+    - packages/ai/          # cliente Bedrock + RAG + guardrail
+    - packages/auth/        # helpers Cognito JWT
+    - packages/ui/          # componentes shadcn/ui compartilhados
+  infra:
+    - infra/                # AWS CDK stacks
+  docs:
+    - docs/                 # ADRs e guias visuais
+
 problema: >
   Professores precisam de uma ferramenta onde possam definir o conteúdo das aulas
   por unidade curricular (UC), e os alunos possam interagir com um agente de IA que
