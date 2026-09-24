@@ -1,0 +1,9 @@
+nome: site-estatico
+titulo: Site estático com baixa latência
+problema: >
+  Uma escola precisa publicar seu site institucional com baixo custo,
+  alta disponibilidade e boa performance para alunos de todo o Brasil.
+requisitos:
+  - Hospedar arquivos HTML, CSS e imagens
+  - Entregar conteúdo com baixa latência
+  - Usar HTTPS com domínio próprio

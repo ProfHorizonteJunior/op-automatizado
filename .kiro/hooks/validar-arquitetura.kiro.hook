@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "name": "Validar arquitetura ao salvar",
+  "description": "Executa o validador sempre que um YAML de arquitetura for editado.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["arquiteturas/*.yaml"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "O arquivo de arquitetura foi alterado. Execute `python arquitetura/validador.py` no arquivo editado e corrija os erros encontrados, seguindo o guia visual AWS."
+  }
+}
