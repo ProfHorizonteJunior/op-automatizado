@@ -1,0 +1,107 @@
+nome: plataforma-educacional
+titulo: Plataforma educacional com agente IA e sistema de chamados colaborativos
+
+problema: >
+  Professores precisam de uma ferramenta onde possam definir o conteúdo das aulas
+  por unidade curricular (UC), e os alunos possam interagir com um agente de IA que
+  conhece o plano de aula, orienta o aprendizado em etapas individualizadas e não
+  entrega código pronto. Além disso, a plataforma precisa de um sistema de chamados
+  colaborativo onde alunos ajudam uns aos outros, recompensados com moedas digitais
+  validadas pelo professor. O professor deve ter visibilidade total sobre o progresso,
+  as dúvidas e o engajamento de cada aluno por turma.
+
+atores:
+  - nome: Estudante
+    descricao: >
+      Faz cadastro, escolhe uma turma, usa o chat com o agente IA, abre e responde
+      chamados de dúvidas, visualiza anotações do professor e acompanha seu saldo de moedas.
+
+  - nome: Professor (Admin)
+    descricao: >
+      Cria e gerencia turmas, unidades curriculares e PDFs de contexto para o agente.
+      Valida chamados resolvidos, distribui moedas, monitora o progresso e engajamento
+      de cada aluno e gerencia o bloco de anotações compartilhadas.
+
+requisitos:
+  autenticacao:
+    - Cadastro de estudante com e-mail e senha
+    - Login de estudante e professor com sessão autenticada
+    - Estudante escolhe a turma após o login (turmas criadas pelo professor)
+    - Professor pode mover estudantes entre turmas e renomear turmas
+
+  agente_ia:
+    - O professor anexa PDFs por UC; o agente usa esses PDFs como contexto
+    - Guardrail ativo: o agente não pode gerar código pronto para o aluno
+    - O agente conhece o PDI do aluno (o que já aprendeu vs. o que deve aprender)
+    - O agente orienta o próximo passo de aprendizagem de forma personalizada
+    - O histórico de interações do aluno com o agente é salvo no banco de dados
+
+  chamados:
+    - Aluno cria um chamado vinculado à sua turma e a uma UC
+    - Chamado fica visível para todos os alunos da turma
+    - Cada aluno pode assumir apenas um chamado por vez
+    - O chamado fica vinculado ao aluno por no máximo 4 horas; após isso volta à fila
+    - O aluno que assumiu pode desistir, devolvendo o chamado à fila
+    - O aluno que teve a dúvida confirma se foi resolvido
+    - O professor valida no painel; validando, o aluno ajudante recebe uma moeda
+    - O professor pode negar a validação (chamado volta à fila) ou excluir o chamado
+    - Cronômetro regressivo de 4h visível para o aluno que assumiu o chamado
+
+  moedas:
+    - Saldo de moedas visível para o aluno na área principal
+    - Professor visualiza o saldo de cada aluno no painel administrativo
+    - Moedas são concedidas apenas após validação do professor
+
+  anotacoes:
+    - Professor cria e edita blocos de anotações por turma/UC (código, links, exemplos)
+    - Estudantes visualizam as anotações em modo somente leitura
+
+  admin:
+    - Dashboard com visão geral de todas as turmas
+    - Gestão de turmas: criar, renomear, mover alunos entre turmas
+    - Gestão de UCs: criar e associar PDFs de contexto ao agente
+    - Fila de chamados pendentes de validação com opção de validar, negar ou excluir
+    - Histórico de chamados por aluno com contador de chamados abertos
+    - Saldo de moedas de cada aluno
+
+paginas:
+  - id: login-cadastro
+    nome: Login e Cadastro
+    descricao: Tela inicial para criação de conta e autenticação de estudantes e professor.
+
+  - id: escolha-turma
+    nome: Escolha de Turma
+    descricao: >
+      Após o login, o estudante escolhe uma das turmas disponíveis criadas pelo professor.
+      Exibida apenas se o aluno ainda não estiver vinculado a uma turma ativa.
+
+  - id: area-estudante
+    nome: Área do Estudante (Wizard)
+    descricao: >
+      Interface principal do aluno em formato wizard com as seções:
+      Chat com agente IA, Chamados (lista, assumir, criar) e Moedas.
+    secoes:
+      - chat: Conversa com o agente IA orientado pelo plano de aula da UC ativa
+      - chamados-lista: Lista de chamados em aberto da turma, com botão de assumir
+      - chamados-criar: Formulário para abrir um novo chamado vinculado a uma UC
+      - chamado-ativo: Tela do chamado assumido com cronômetro regressivo de 4h
+      - moedas: Exibição do saldo atual de moedas do aluno
+
+  - id: anotacoes
+    nome: Anotações do Professor
+    descricao: >
+      Repositório somente leitura para os alunos com blocos de código, links e
+      exemplos publicados pelo professor por turma e UC.
+
+  - id: admin
+    nome: Painel Administrativo
+    descricao: >
+      Área exclusiva do professor com gestão completa: turmas, alunos, UCs, PDFs
+      de contexto do agente, fila de validação de chamados, moedas e anotações.
+    secoes:
+      - dashboard: Visão geral de turmas, alunos ativos e chamados pendentes
+      - turmas: Criar, renomear turmas e mover alunos
+      - ucs: Criar unidades curriculares e anexar PDFs ao agente
+      - chamados-validacao: Fila de chamados aguardando validação do professor
+      - alunos: Progresso individual, contador de chamados, saldo de moedas
+      - anotacoes-admin: Criar e editar blocos de anotações por turma/UC

@@ -1,0 +1,200 @@
+nome: plataforma-educacional
+descricao: >
+  Plataforma educacional com agente IA contextualizado por PDFs de UC,
+  sistema de chamados colaborativos com recompensa em moedas e painel
+  administrativo para gestão do professor.
+
+servicos:
+  # ── Clientes ──────────────────────────────────────────────────────────────
+  - id: estudante
+    nome: Estudante
+    icone: Users.svg
+
+  - id: professor
+    nome: Professor (Admin)
+    icone: User.svg
+
+  # ── Frontend ──────────────────────────────────────────────────────────────
+  - id: frontend
+    nome: Frontend Web (React/Next.js)
+    icone: Client.svg
+    paginas:
+      - login-cadastro
+      - escolha-turma
+      - area-estudante
+      - anotacoes
+      - admin
+
+  # ── API Gateway ───────────────────────────────────────────────────────────
+  - id: api-gateway
+    nome: API Gateway
+    icone: Amazon-API-Gateway.svg
+    descricao: Ponto de entrada único para todas as rotas REST da plataforma.
+
+  # ── Serviços de Backend ───────────────────────────────────────────────────
+  - id: servico-auth
+    nome: Serviço de Autenticação
+    icone: Amazon-Cognito.svg
+    responsabilidades:
+      - Cadastro e login de estudantes e professor
+      - Emissão e validação de JWT
+      - Controle de perfis (estudante / professor)
+
+  - id: servico-turmas
+    nome: Serviço de Turmas e Alunos
+    icone: AWS-Organizations.svg
+    responsabilidades:
+      - Criação e renomeação de turmas
+      - Vinculação e movimentação de alunos entre turmas
+      - Listagem de turmas disponíveis para escolha no login
+
+  - id: servico-ucs
+    nome: Serviço de Unidades Curriculares
+    icone: Amazon-S3.svg
+    responsabilidades:
+      - Criação de UCs pelo professor
+      - Upload e gerenciamento de PDFs por UC
+      - Disponibilização dos PDFs como contexto para o agente
+
+  - id: servico-agente
+    nome: Serviço do Agente IA
+    icone: Amazon-Bedrock.svg
+    responsabilidades:
+      - Orquestração do LLM com contexto dos PDFs da UC ativa
+      - Guardrail que impede geração de código pronto
+      - Gestão do PDI do aluno (histórico de aprendizado)
+      - Orientação personalizada do próximo passo de aprendizagem
+      - Persistência do histórico de conversas por aluno
+
+  - id: servico-chamados
+    nome: Serviço de Chamados
+    icone: Amazon-SQS.svg
+    responsabilidades:
+      - Criação de chamados vinculados a turma e UC
+      - Listagem de chamados em aberto por turma
+      - Atribuição exclusiva de chamado a um aluno (1 por vez)
+      - Controle do timer de 4h com devolução automática à fila
+      - Fluxo de resolução, confirmação, validação, negação e exclusão
+
+  - id: servico-moedas
+    nome: Serviço de Moedas
+    icone: AWS-Cost-Explorer.svg
+    responsabilidades:
+      - Crédito de moedas após validação do professor
+      - Consulta de saldo por aluno
+      - Histórico de transações
+
+  - id: servico-anotacoes
+    nome: Serviço de Anotações
+    icone: Amazon-DocumentDB.svg
+    responsabilidades:
+      - Criação e edição de blocos de anotações pelo professor
+      - Leitura somente por alunos vinculados à turma/UC
+
+  - id: servico-admin
+    nome: Serviço Administrativo
+    icone: AWS-Management-Console.svg
+    responsabilidades:
+      - Dashboard consolidado de turmas e alunos
+      - Fila de validação de chamados
+      - Relatório de progresso, moedas e chamados por aluno
+
+  # ── Agendador ─────────────────────────────────────────────────────────────
+  - id: scheduler
+    nome: Agendador de Tarefas (Cron)
+    icone: Amazon-EventBridge.svg
+    descricao: >
+      Job periódico que verifica chamados com timer expirado e os devolve
+      automaticamente à fila de chamados em aberto.
+
+  # ── Armazenamento ─────────────────────────────────────────────────────────
+  - id: banco-relacional
+    nome: Banco de Dados Relacional
+    icone: Amazon-RDS.svg
+    tabelas:
+      - usuarios
+      - turmas
+      - aluno_turma
+      - unidades_curriculares
+      - chamados
+      - chamado_atribuicao
+      - moedas
+      - anotacoes
+      - historico_chat
+
+  - id: armazenamento-pdfs
+    nome: Armazenamento de PDFs
+    icone: Amazon-Simple-Storage-Service.svg
+    descricao: Bucket para os PDFs de cada UC enviados pelo professor.
+
+  - id: vector-store
+    nome: Base Vetorial (RAG)
+    icone: Amazon-OpenSearch-Service.svg
+    descricao: >
+      Índice vetorial dos PDFs das UCs usado pelo agente para recuperação
+      semântica de conteúdo relevante ao contexto da conversa.
+
+conexoes:
+  # Atores → Frontend
+  - de: estudante
+    para: frontend
+  - de: professor
+    para: frontend
+
+  # Frontend → API Gateway
+  - de: frontend
+    para: api-gateway
+
+  # API Gateway → Serviços
+  - de: api-gateway
+    para: servico-auth
+  - de: api-gateway
+    para: servico-turmas
+  - de: api-gateway
+    para: servico-ucs
+  - de: api-gateway
+    para: servico-agente
+  - de: api-gateway
+    para: servico-chamados
+  - de: api-gateway
+    para: servico-moedas
+  - de: api-gateway
+    para: servico-anotacoes
+  - de: api-gateway
+    para: servico-admin
+
+  # Serviços → Banco de dados
+  - de: servico-auth
+    para: banco-relacional
+  - de: servico-turmas
+    para: banco-relacional
+  - de: servico-ucs
+    para: banco-relacional
+  - de: servico-agente
+    para: banco-relacional
+  - de: servico-chamados
+    para: banco-relacional
+  - de: servico-moedas
+    para: banco-relacional
+  - de: servico-anotacoes
+    para: banco-relacional
+  - de: servico-admin
+    para: banco-relacional
+
+  # UCs → Armazenamento e RAG
+  - de: servico-ucs
+    para: armazenamento-pdfs
+  - de: servico-ucs
+    para: vector-store
+
+  # Agente IA → RAG
+  - de: servico-agente
+    para: vector-store
+
+  # Chamados → Serviço de Moedas (concessão após validação)
+  - de: servico-chamados
+    para: servico-moedas
+
+  # Scheduler → Chamados (devolução automática por timeout)
+  - de: scheduler
+    para: servico-chamados
