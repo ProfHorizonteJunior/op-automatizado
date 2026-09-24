@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="300" height="400">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="60%" r="60%">
+      <stop offset="0%" stop-color="#1a3a1a"/>
+      <stop offset="100%" stop-color="#0a1a0a"/>
+    </radialGradient>
+    <radialGradient id="skinGrad" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#6fdb5f"/>
+      <stop offset="60%" stop-color="#3dab2e"/>
+      <stop offset="100%" stop-color="#1e6e12"/>
+    </radialGradient>
+    <radialGradient id="skinDark" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#4db040"/>
+      <stop offset="100%" stop-color="#1a5e10"/>
+    </radialGradient>
+    <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffaa"/>
+      <stop offset="100%" stop-color="#cc8800"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="6" stdDeviation="6" flood-color="#003300" flood-opacity="0.7"/>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Fundo -->
+  <rect width="300" height="400" fill="url(#bgGrad)"/>
+
+  <!-- Sombra no chão -->
+  <ellipse cx="150" cy="390" rx="70" ry="12" fill="#000" opacity="0.5"/>
+
+  <!-- ── CORPO ── -->
+  <!-- Tronco muscular -->
+  <path d="M90 200 Q75 230 72 290 Q70 320 78 340 L222 340 Q230 320 228 290 Q225 230 210 200 Z"
+        fill="url(#skinGrad)" filter="url(#shadow)"/>
+
+  <!-- Definição abdominal -->
+  <path d="M130 230 Q150 225 170 230 L168 250 Q150 248 132 250 Z" fill="#2a8a1e" opacity="0.5"/>
+  <path d="M130 255 Q150 250 170 255 L168 275 Q150 273 132 275 Z" fill="#2a8a1e" opacity="0.5"/>
+  <path d="M130 280 Q150 275 170 280 L168 300 Q150 298 132 300 Z" fill="#2a8a1e" opacity="0.5"/>
+  <!-- Linha central do abdômen -->
+  <line x1="150" y1="220" x2="150" y2="310" stroke="#1e6e12" stroke-width="2" opacity="0.6"/>
+  <!-- Peitoral -->
+  <path d="M95 200 Q118 185 148 190 Q148 215 130 220 Q105 218 95 200Z" fill="#4db040" opacity="0.5"/>
+  <path d="M205 200 Q182 185 152 190 Q152 215 170 220 Q195 218 205 200Z" fill="#4db040" opacity="0.5"/>
+
+  <!-- ── OMBROS e BRAÇOS ── -->
+  <!-- Ombro esquerdo (nosso direito) -->
+  <ellipse cx="82" cy="195" rx="26" ry="24" fill="url(#skinGrad)" filter="url(#shadow)"/>
+  <!-- Ombro direito -->
+  <ellipse cx="218" cy="195" rx="26" ry="24" fill="url(#skinGrad)" filter="url(#shadow)"/>
+
+  <!-- Braço esquerdo (levantado, postura de raiva) -->
+  <path d="M72 200 Q40 210 28 240 Q20 265 35 280 Q50 290 62 268 Q72 248 88 225 Z"
+        fill="url(#skinGrad)" filter="url(#shadow)"/>
+  <!-- Músculo bíceps esquerdo -->
+  <ellipse cx="48" cy="248" rx="16" ry="20" fill="#4db040" opacity="0.4" transform="rotate(-20,48,248)"/>
+
+  <!-- Braço direito (levantado, punho fechado) -->
+  <path d="M228 200 Q260 210 272 240 Q280 265 265 280 Q250 290 238 268 Q228 248 212 225 Z"
+        fill="url(#skinGrad)" filter="url(#shadow)"/>
+  <!-- Músculo bíceps direito -->
+  <ellipse cx="252" cy="248" rx="16" ry="20" fill="#4db040" opacity="0.4" transform="rotate(20,252,248)"/>
+
+  <!-- Antebraço esquerdo -->
+  <path d="M35 278 Q20 300 22 325 Q28 345 45 348 Q60 348 65 328 Q68 308 62 280 Z"
+        fill="url(#skinGrad)" filter="url(#shadow)"/>
+  <!-- Antebraço direito -->
+  <path d="M265 278 Q280 300 278 325 Q272 345 255 348 Q240 348 235 328 Q232 308 238 280 Z"
+        fill="url(#skinGrad)" filter="url(#shadow)"/>
+
+  <!-- Mão esquerda (punho fechado) -->
+  <rect x="18" y="340" width="38" height="28" rx="8" fill="url(#skinDark)" filter="url(#shadow)"/>
+  <line x1="28" y1="340" x2="28" y2="368" stroke="#1e6e12" stroke-width="1.5" opacity="0.5"/>
+  <line x1="38" y1="340" x2="38" y2="368" stroke="#1e6e12" stroke-width="1.5" opacity="0.5"/>
+  <line x1="48" y1="340" x2="48" y2="368" stroke="#1e6e12" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- Mão direita (punho fechado) -->
+  <rect x="244" y="340" width="38" height="28" rx="8" fill="url(#skinDark)" filter="url(#shadow)"/>
+  <line x1="254" y1="340" x2="254" y2="368" stroke="#1e6e12" stroke-width="1.5" opacity="0.5"/>
+  <line x1="264" y1="340" x2="264" y2="368" stroke="#1e6e12" stroke-width="1.5" opacity="0.5"/>
+  <line x1="274" y1="340" x2="274" y2="368" stroke="#1e6e12" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- ── PESCOÇO ── -->
+  <path d="M128 155 Q128 175 120 185 L180 185 Q172 175 172 155 Z"
+        fill="url(#skinGrad)"/>
+  <!-- Veia do pescoço -->
+  <path d="M138 160 Q135 172 133 182" stroke="#1e6e12" stroke-width="2" fill="none" opacity="0.5"/>
+
+  <!-- ── CABEÇA ── -->
+  <ellipse cx="150" cy="125" rx="58" ry="62" fill="url(#skinGrad)" filter="url(#shadow)"/>
+
+  <!-- Testa franzida / sobrancelhas -->
+  <!-- Sobrancelha esquerda -->
+  <path d="M100 100 Q118 88 135 95" stroke="#1a5a10" stroke-width="7" fill="none"
+        stroke-linecap="round" transform="rotate(-8,117,94)"/>
+  <!-- Sobrancelha direita -->
+  <path d="M165 95 Q182 88 200 100" stroke="#1a5a10" stroke-width="7" fill="none"
+        stroke-linecap="round" transform="rotate(8,183,94)"/>
+
+  <!-- Rugas de raiva na testa -->
+  <path d="M130 88 Q140 82 150 86" stroke="#1e6e12" stroke-width="2" fill="none" opacity="0.6"/>
+  <path d="M150 86 Q160 82 170 88" stroke="#1e6e12" stroke-width="2" fill="none" opacity="0.6"/>
+  <path d="M140 80 L145 73" stroke="#1e6e12" stroke-width="1.5" fill="none" opacity="0.5"/>
+  <path d="M160 80 L155 73" stroke="#1e6e12" stroke-width="1.5" fill="none" opacity="0.5"/>
+
+  <!-- Olho esquerdo -->
+  <ellipse cx="125" cy="115" rx="16" ry="12" fill="#111" />
+  <ellipse cx="125" cy="115" rx="11" ry="8" fill="url(#eyeGlow)" filter="url(#glow)"/>
+  <ellipse cx="125" cy="115" rx="6" ry="5" fill="#7a4000"/>
+  <ellipse cx="125" cy="115" rx="3" ry="3" fill="#111"/>
+  <ellipse cx="122" cy="112" rx="2" ry="1.5" fill="white" opacity="0.7"/>
+
+  <!-- Olho direito -->
+  <ellipse cx="175" cy="115" rx="16" ry="12" fill="#111"/>
+  <ellipse cx="175" cy="115" rx="11" ry="8" fill="url(#eyeGlow)" filter="url(#glow)"/>
+  <ellipse cx="175" cy="115" rx="6" ry="5" fill="#7a4000"/>
+  <ellipse cx="175" cy="115" rx="3" ry="3" fill="#111"/>
+  <ellipse cx="172" cy="112" rx="2" ry="1.5" fill="white" opacity="0.7"/>
+
+  <!-- Nariz largo -->
+  <path d="M144 122 Q140 138 135 143 Q142 148 150 146 Q158 148 165 143 Q160 138 156 122 Z"
+        fill="#2a8a1e" opacity="0.7"/>
+  <ellipse cx="141" cy="142" rx="6" ry="4" fill="#1a5e10" opacity="0.8"/>
+  <ellipse cx="159" cy="142" rx="6" ry="4" fill="#1a5e10" opacity="0.8"/>
+
+  <!-- Boca aberta / gritando -->
+  <path d="M115 158 Q130 148 150 150 Q170 148 185 158 Q178 178 150 182 Q122 178 115 158 Z"
+        fill="#1a1a1a"/>
+  <!-- Dentes superiores -->
+  <path d="M122 160 L122 170 L132 170 L132 160 Z" fill="white" rx="2"/>
+  <path d="M133 158 L132 168 L142 167 L143 157 Z" fill="white"/>
+  <path d="M144 157 L143 167 L153 167 L154 157 Z" fill="white"/>
+  <path d="M155 158 L154 168 L164 168 L165 160 Z" fill="white"/>
+  <path d="M166 160 L165 170 L175 170 L176 162 Z" fill="white"/>
+  <!-- Língua -->
+  <ellipse cx="150" cy="176" rx="16" ry="8" fill="#cc2244"/>
+
+  <!-- Orelhas -->
+  <ellipse cx="91" cy="122" rx="12" ry="16" fill="url(#skinGrad)"/>
+  <ellipse cx="91" cy="122" rx="7" ry="10" fill="#2a8a1e" opacity="0.5"/>
+  <ellipse cx="209" cy="122" rx="12" ry="16" fill="url(#skinGrad)"/>
+  <ellipse cx="209" cy="122" rx="7" ry="10" fill="#2a8a1e" opacity="0.5"/>
+
+  <!-- Cabelo desgrenhado -->
+  <path d="M100 75 Q95 45 115 38 Q125 35 130 50 Q135 30 150 28 Q165 30 170 50 Q175 35 185 38 Q205 45 200 75"
+        fill="#1a3a0a" stroke="#0a2005" stroke-width="1"/>
+  <path d="M102 72 Q92 50 108 42" fill="none" stroke="#2a5a10" stroke-width="3" stroke-linecap="round"/>
+  <path d="M198 72 Q208 50 192 42" fill="none" stroke="#2a5a10" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Veias na testa (raiva) -->
+  <path d="M108 95 Q112 88 118 92" stroke="#1a5a10" stroke-width="2.5" fill="none" opacity="0.7"/>
+  <path d="M192 95 Q188 88 182 92" stroke="#1a5a10" stroke-width="2.5" fill="none" opacity="0.7"/>
+
+  <!-- ── PERNAS ── -->
+  <!-- Calça roxa rasgada - perna esquerda -->
+  <path d="M100 335 Q88 355 85 390 L135 390 Q133 360 128 335 Z" fill="#4a1a6a"/>
+  <!-- Rasgos na calça esquerda -->
+  <path d="M95 355 L108 350" stroke="#6a2a8a" stroke-width="1.5" opacity="0.7"/>
+  <path d="M90 370 L105 367" stroke="#6a2a8a" stroke-width="1.5" opacity="0.7"/>
+  <path d="M88 382 L100 380" stroke="#6a2a8a" stroke-width="1.5" opacity="0.7"/>
+
+  <!-- Calça roxa rasgada - perna direita -->
+  <path d="M200 335 Q212 355 215 390 L165 390 Q167 360 172 335 Z" fill="#4a1a6a"/>
+  <!-- Rasgos na calça direita -->
+  <path d="M205 355 L192 350" stroke="#6a2a8a" stroke-width="1.5" opacity="0.7"/>
+  <path d="M210 370 L195 367" stroke="#6a2a8a" stroke-width="1.5" opacity="0.7"/>
+  <path d="M212 382 L200 380" stroke="#6a2a8a" stroke-width="1.5" opacity="0.7"/>
+
+  <!-- Pé esquerdo -->
+  <ellipse cx="108" cy="392" rx="28" ry="10" fill="url(#skinDark)"/>
+  <!-- Pé direito -->
+  <ellipse cx="192" cy="392" rx="28" ry="10" fill="url(#skinDark)"/>
+
+  <!-- ── EFEITOS ── -->
+  <!-- Brilho de energia / raiva ao redor -->
+  <ellipse cx="150" cy="200" rx="130" ry="190" fill="none" stroke="#33ff33" stroke-width="1.5"
+           opacity="0.15" filter="url(#glow)"/>
+  <ellipse cx="150" cy="200" rx="140" ry="200" fill="none" stroke="#55ff55" stroke-width="1"
+           opacity="0.08"/>
+
+  <!-- Faíscas de energia (detalhes de ação) -->
+  <path d="M50 150 L38 140 L55 135 L42 125" stroke="#aaff44" stroke-width="2" fill="none"
+        opacity="0.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M250 150 L262 140 L245 135 L258 125" stroke="#aaff44" stroke-width="2" fill="none"
+        opacity="0.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M55 320 L42 315 L50 305" stroke="#88ff22" stroke-width="1.5" fill="none"
+        opacity="0.5" stroke-linecap="round"/>
+  <path d="M245 320 L258 315 L250 305" stroke="#88ff22" stroke-width="1.5" fill="none"
+        opacity="0.5" stroke-linecap="round"/>
+
+  <!-- Texto / label -->
+  <text x="150" y="22" font-family="Arial Black, sans-serif" font-size="16"
+        font-weight="900" text-anchor="middle" fill="#55ff55" opacity="0.9"
+        letter-spacing="3">GIGANTE VERDE</text>
+</svg>

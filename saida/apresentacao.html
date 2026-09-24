@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Plataforma Educacional com IA</title>
+<style>
+/* ─────────────────────────────────────────────
+   RESET & VARIÁVEIS
+───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ── Paleta primária ── */
+  --brand-blue:   #164194;   /* azul institucional */
+  --brand-orange: #E84910;   /* laranja vibrante   */
+
+  /* ── Derivados azul ── */
+  --navy:         #0b2359;   /* mais escuro que brand-blue */
+  --blue-dark:    #164194;   /* = brand-blue */
+  --blue-mid:     #2358b8;   /* um tom acima */
+  --blue:         #3b74d4;
+  --blue-soft:    #6a9de0;
+  --blue-pale:    #b3cdf0;
+  --blue-wash:    #dce8f8;
+
+  /* ── Derivados laranja ── */
+  --orange-dark:  #b83508;   /* sombra do laranja */
+  --orange:       #E84910;   /* = brand-orange */
+  --orange-mid:   #f06630;   /* um tom acima */
+  --orange-light: #f7a882;   /* pastel */
+  --orange-wash:  #fdf0eb;   /* fundo suave */
+
+  /* ── Neutros ── */
+  --white:        #ffffff;
+  --off-white:    #f5f7fc;
+  --slate:        #3d5070;
+  --muted:        #6b7fa8;
+  --text:         #0f1e3c;
+  --text-2:       #2d4070;
+
+  /* Layout 16:9 Screen (HDTV Ratio) - Substituindo A4 landscape */
+  --W:      1920px;
+  --H:      1080px;
+  /* Área segura proporcional */
+  --safe:   60px;
+  /* Faixa do título proporcional */
+  --title-h: 120px;
+}
+
+body {
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  background: #0f1e3c;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding: 40px 0;
+}
+
+/* ─────────────────────────────────────────────
+   SLIDE — Formato 16:9
+───────────────────────────────────────────── */
+.slide {
+  width:  var(--W);
+  height: var(--H);
+  overflow: hidden;
+  background: var(--white);
+  position: relative;
+  page-break-after: always;
+  break-after: page;
+
+  /* Área segura via padding */
+  padding: var(--safe);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  
+  /* Sombra suave para destacar o slide no body (navegador) */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+/* Borda de área segura (tracejada, não imprime) */
+.slide::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--safe) - 15px);
+  border: 3px dashed rgba(22,65,148,.20);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────
+   FAIXA DO TÍTULO
+───────────────────────────────────────────── */
+.title-band {
+  height: var(--title-h);
+  min-height: var(--title-h);
+  max-height: var(--title-h);
+  /* gradiente azul → laranja muito suave */
+  background: linear-gradient(100deg, var(--blue-wash) 60%, #fce8de 100%);
+  border-left: 12px solid var(--brand-blue);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  margin-bottom: 40px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Detalhe laranja no canto direito da faixa */
+.title-band::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 8px;
+  background: var(--brand-orange);
+  border-radius: 0 8px 8px 0;
+}
+
+.title-band .slide-label {
+  font-size: 24px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--brand-orange);
+  font-weight: 700;
+  margin-right: 30px;
+  white-space: nowrap;
+}
+
+.title-band h2 {
+  font-size: 56px;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.15;
+}
+
+/* ─────────────────────────────────────────────
+   CORPO
+───────────────────────────────────────────── */
+.body-area {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  min-height: 0;
+}
+
+.body-area.full { grid-template-columns: 1fr; }
+.body-area.wide-text { grid-template-columns: 3fr 2fr; }
+.body-area.wide-visual { grid-template-columns: 2fr 3fr; }
+
+.body-left,
+.body-right {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────────
+   BULLETS
+───────────────────────────────────────────── */
+.bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  justify-content: center; /* Centraliza os bullets verticalmente */
+}
+
+.bullets li {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  font-size: 28px;
+  color: var(--text);
+  line-height: 1.45;
+  padding: 24px 30px;
+  background: var(--off-white);
+  border-radius: 12px;
+  border-left: 8px solid var(--brand-blue);
+  transition: border-color .2s;
+}
+
+/* alterna borda laranja nos bullets ímpares */
+.bullets li:nth-child(odd) {
+  border-left-color: var(--brand-orange);
+}
+
+.bullets li strong {
+  color: var(--brand-blue);
+  font-weight: 700;
+}
+
+.bullets li:nth-child(odd) strong {
+  color: var(--orange-dark);
+}
+
+.bullets li .b-marker {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--brand-blue);
+  flex-shrink: 0;
+  margin-top: 12px;
+}
+
+.bullets li:nth-child(odd) .b-marker {
+  background: var(--brand-orange);
+}
+
+/* ─────────────────────────────────────────────
+   VISUAL
+───────────────────────────────────────────── */
+.visual-wrap {
+  flex: 1;
+  background: var(--off-white);
+  border-radius: 16px;
+  border: 3px solid var(--blue-pale);
+  border-top: 4px solid var(--brand-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 0;
+  padding: 20px;
+}
+
+.visual-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* ─────────────────────────────────────────────
+   RODAPÉ
+───────────────────────────────────────────── */
+.footer {
+  position: absolute;
+  bottom: calc(var(--safe) - 20px);
+  left: var(--safe);
+  right: var(--safe);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 20px; /* FONTE AUMENTADA */
+  color: var(--muted);
+  padding-top: 10px;
+  border-top: none;
+}
+
+/* Linha no rodapé apenas nos slides 1 e 2 */
+.slide-cover .footer  { border-top: 2px solid rgba(255,255,255,.12); }
+.slide-section .footer { border-top: 2px solid var(--blue-pale); }
+
+/* ─────────────────────────────────────────────
+   SLIDE 1 — CAPA
+───────────────────────────────────────────── */
+.slide-cover {
+  /* gradiente azul escuro com acento laranja no rodapé */
+  background: linear-gradient(150deg, var(--navy) 0%, var(--brand-blue) 55%, #0e2d70 100%);
+  justify-content: center;
+  padding: var(--safe);
+  border-bottom: 8px solid var(--brand-orange);
+}
+
+.slide-cover::before { border-color: rgba(255,255,255,.15); }
+.cover-inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 80px;
+  align-items: center;
+  width: 100%;
+  padding: 0 60px; /* Mais respiro na capa */
+}
+
+.cover-kicker {
+  display: inline-block;
+  background: rgba(232,73,16,.18);
+  border: 2px solid rgba(232,73,16,.45);
+  color: #ffb899;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 20px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.cover-text h1 {
+  font-size: 80px; /* FONTE AUMENTADA */
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 30px;
+}
+
+.cover-text .cover-sub {
+  font-size: 32px; /* FONTE AUMENTADA */
+  color: var(--blue-pale);
+  line-height: 1.5;
+  max-width: 1000px;
+  margin-bottom: 60px;
+}
+
+.cover-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px 60px;
+}
+
+.cover-meta-item .ml {
+  font-size: 18px; /* FONTE AUMENTADA */
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--blue-soft);
+  margin-bottom: 8px;
+}
+
+.cover-meta-item .mv {
+  font-size: 28px; /* FONTE AUMENTADA */
+  font-weight: 700;
+  color: var(--white);
+}
+
+.cover-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 400px;
+}
+
+.stack-badge {
+  background: rgba(255,255,255,.07);
+  border: 2px solid rgba(255,255,255,.14);
+  border-left: 5px solid var(--brand-orange);
+  border-radius: 12px;
+  padding: 20px 30px;
+  font-size: 24px;
+  color: var(--blue-pale);
+  font-weight: 600;
+}
+
+.stack-badge .sb-label {
+  font-size: 16px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--orange-light);
+  margin-bottom: 8px;
+}
+
+/* ─────────────────────────────────────────────
+   SLIDE 2 — SEÇÃO
+───────────────────────────────────────────── */
+.slide-section {
+  /* gradiente suave azul → quase branco */
+  background: linear-gradient(120deg, #dce8f8 0%, #f0f6ff 60%, #fceee8 100%);
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 120px;
+  border-left: 12px solid var(--brand-blue);
+  border-right: 12px solid var(--brand-orange);
+}
+
+.section-inner {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 80px;
+  align-items: center;
+  width: 100%;
+}
+
+.section-num {
+  font-size: 280px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--brand-blue) 0%, var(--brand-orange) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  letter-spacing: -8px;
+  opacity: .30;
+  user-select: none;
+}
+
+.section-eyebrow {
+  font-size: 24px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--brand-orange);
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.section-copy h2 {
+  font-size: 72px; /* FONTE AUMENTADA */
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.1;
+  margin-bottom: 30px;
+}
+
+.section-copy p {
+  font-size: 32px; /* FONTE AUMENTADA */
+  color: var(--slate);
+  line-height: 1.65;
+  max-width: 1200px;
+  margin-bottom: 40px;
+}
+
+.tag-row { display: flex; gap: 16px; flex-wrap: wrap; }
+
+.stag {
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 22px;
+  font-weight: 600;
+  border: 2px solid var(--brand-blue);
+  background: rgba(22,65,148,.08);
+  color: var(--brand-blue);
+}
+
+.stag:nth-child(even) {
+  border-color: var(--brand-orange);
+  background: rgba(232,73,16,.07);
+  color: var(--orange-dark);
+}
+
+/* ─────────────────────────────────────────────
+   CARD GENÉRICO
+───────────────────────────────────────────── */
+.card {
+  background: var(--off-white);
+  border: 2px solid var(--blue-pale);
+  border-radius: 16px;
+  padding: 30px;
+}
+
+.card-label {
+  font-size: 20px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--blue-mid);
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--blue-pale);
+}
+
+/* ─────────────────────────────────────────────
+   COMPARAÇÃO
+───────────────────────────────────────────── */
+.compare-col {
+  border-radius: 16px;
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+}
+
+.compare-col.chosen {
+  background: linear-gradient(160deg, rgba(22,65,148,.07) 0%, rgba(22,65,148,.03) 100%);
+  border: 3px solid var(--brand-blue);
+}
+
+.compare-col.alt {
+  background: var(--off-white);
+  border: 2px solid var(--blue-pale);
+}
+
+.col-head {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--blue-pale);
+  margin-bottom: 10px;
+}
+
+.col-pill {
+  font-size: 16px; /* FONTE AUMENTADA */
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 6px;
+}
+
+.col-pill.our   { background: rgba(22,65,148,.15);  color: var(--brand-blue); }
+.col-pill.theirs { background: rgba(110,140,170,.15); color: var(--slate); }
+
+.col-head h4 {
+  font-size: 32px; /* FONTE AUMENTADA */
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.compare-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.compare-row .dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 12px;
+}
+
+.dot-our  { background: var(--brand-blue); }
+.dot-alt  { background: var(--blue-pale); }
+
+.compare-row p {
+  font-size: 26px; /* FONTE AUMENTADA */
+  color: var(--text-2);
+  line-height: 1.45;
+}
+
+.compare-row p strong { color: var(--navy); font-weight: 700; }
+
+/* ─────────────────────────────────────────────
+   FECHAMENTO
+───────────────────────────────────────────── */
+.close-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 30px;
+  flex: 1;
+}
+
+.close-block {
+  background: var(--off-white);
+  border: 2px solid var(--blue-pale);
+  border-top: 8px solid var(--blue-mid);
+  border-radius: 16px;
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.close-block .bl {
+  font-size: 20px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--brand-blue);
+  font-weight: 700;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--blue-pale);
+}
+
+.nums-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.num-item { text-align: center; }
+.num-item .n {
+  font-size: 64px;
+  font-weight: 900;
+  color: var(--brand-blue);
+  line-height: 1;
+}
+/* Números alternados em laranja */
+.num-item:nth-child(even) .n {
+  color: var(--brand-orange);
+}
+.num-item .nl {
+  font-size: 18px; /* FONTE AUMENTADA */
+  color: var(--muted);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+
+.close-block ul { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+.close-block ul li {
+  font-size: 24px; /* FONTE AUMENTADA */
+  color: var(--text-2);
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  line-height: 1.4;
+}
+.close-block ul li::before {
+  content: '›';
+  color: var(--blue-mid);
+  font-weight: 700;
+  flex-shrink: 0;
+  font-size: 32px;
+  line-height: 1;
+}
+.close-block ul li strong { color: var(--navy); }
+
+/* ─────────────────────────────────────────────
+   CORES RODAPÉ ESPECIAIS
+───────────────────────────────────────────── */
+.slide-cover .footer { color: rgba(255,255,255,.35); }
+
+/* ─────────────────────────────────────────────
+   BOTÃO IMPRESSÃO
+───────────────────────────────────────────── */
+.print-btn {
+  position: fixed;
+  top: 30px; right: 30px; z-index: 999;
+  background: var(--blue-dark);
+  color: #fff; border: none; border-radius: 8px;
+  padding: 16px 32px; font-size: 20px; font-weight: 700;
+  cursor: pointer; letter-spacing: 1px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.28);
+}
+.print-btn:hover { background: var(--blue-mid); }
+
+/* ─────────────────────────────────────────────
+   IMPRESSÃO / PDF (Para A4/16:9 PDF)
+───────────────────────────────────────────── */
+@media print {
+  html, body { background: #fff !important; padding: 0; gap: 0; display: block; }
+  /* Removendo margin da impressão */
+  @page { size: 1920px 1080px; margin: 0; }
+  .slide { margin: 0; box-shadow: none; page-break-after: always; break-after: page; }
+  .slide::before { display: none; }
+  .print-btn { display: none !important; }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">Imprimir / Salvar PDF</button>
+
+<!-- SLIDE 1 -->
+<div class="slide slide-cover">
+  <div class="cover-inner">
+    <div class="cover-text">
+      <div class="cover-kicker">SaaS Educacional &nbsp;·&nbsp; Ensino Técnico e Superior</div>
+      <h1>Plataforma Educacional<br>com Agente IA</h1>
+      <p class="cover-sub">
+        Agente contextualizado por plano de aula, PDI automatizado por aluno
+        e aprendizado colaborativo com chamados e recompensas validadas pelo professor.
+      </p>
+      <div class="cover-meta">
+        <div class="cover-meta-item"><div class="ml">Grupo</div><div class="mv">MSEP — Turma 2026</div></div>
+        <div class="cover-meta-item"><div class="ml">Caso</div><div class="mv">plataforma-educacional</div></div>
+        <div class="cover-meta-item"><div class="ml">Região AWS</div><div class="mv">us-east-1</div></div>
+        <div class="cover-meta-item"><div class="ml">Infraestrutura</div><div class="mv">AWS CDK · TypeScript</div></div>
+      </div>
+    </div>
+    <div class="cover-right">
+      <div class="stack-badge"><div class="sb-label">Frontend</div>Next.js 14 · TypeScript · Tailwind</div>
+      <div class="stack-badge"><div class="sb-label">Backend</div>AWS Lambda · Fastify · Drizzle ORM</div>
+      <div class="stack-badge"><div class="sb-label">Agente IA</div>Bedrock · Claude 3 · OpenSearch RAG</div>
+      <div class="stack-badge"><div class="sb-label">Dados &amp; Auth</div>RDS PostgreSQL · Amazon Cognito · S3</div>
+      <div class="stack-badge"><div class="sb-label">Agendamento</div>EventBridge Scheduler · cron 15 min</div>
+    </div>
+  </div>
+ 
+</div>
+
+<!-- SLIDE 2 -->
+<div class="slide slide-section">
+  <div class="section-inner">
+    <div class="section-num" aria-hidden="true">02</div>
+    <div class="section-copy">
+      <div class="section-eyebrow">Contexto do projeto</div>
+      <h2>Problema, Solução<br>e Diferenciais</h2>
+      <p>
+        Estudantes de cursos técnicos e superiores travam em exercícios sem orientação
+        personalizada. Professores não têm dados sobre o progresso real de cada aluno.
+        A plataforma resolve os dois lados com IA, PDI contínuo e colaboração incentivada.
+      </p>
+      <div class="tag-row">
+        <span class="stag">Alunos sem suporte a tempo</span>
+        <span class="stag">Professor sem visibilidade</span>
+        <span class="stag">Agente IA com guardrail</span>
+        <span class="stag">PDI automatizado</span>
+        <span class="stag">Chamados peer-to-peer</span>
+        <span class="stag">Moedas validadas pelo professor</span>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<!-- SLIDE 3 -->
+<div class="slide">
+  <div class="title-band">
+    <span class="slide-label">Funcionalidades</span>
+    <h2>O que a plataforma entrega</h2>
+  </div>
+  <div class="body-area wide-text">
+    <div class="body-left">
+      <ul class="bullets">
+        <li><div class="b-marker"></div><div><strong>Agente IA com contexto de aula</strong> — professor sobe PDFs por UC; RAG garante respostas dentro do conteúdo.</div></li>
+        <li><div class="b-marker"></div><div><strong>Guardrail nativo</strong> — Bedrock bloqueia geração de código pronto; o agente orienta sem dar respostas.</div></li>
+        <li><div class="b-marker"></div><div><strong>PDI automatizado por aluno</strong> — histórico salvo; agente sabe o que foi dominado e sugere o próximo passo.</div></li>
+        <li><div class="b-marker"></div><div><strong>Sistema de chamados P2P</strong> — dúvida vira chamado visível à turma; colega assume com timer de 4 h.</div></li>
+        <li><div class="b-marker"></div><div><strong>Validação e moedas</strong> — concedidas apenas após professor validar; inibe fraudes.</div></li>
+      </ul>
+    </div>
+    <div class="body-right">
+      <div class="visual-wrap" style="flex-direction:column; align-items:stretch; padding:30px; gap:20px; justify-content:center;">
+        <div style="font-size:20px;letter-spacing:4px;text-transform:uppercase;color:var(--blue-mid);font-weight:700;margin-bottom:10px;text-align:center;">Fluxo principal</div>
+
+        <div style="background:var(--blue-wash);border:2px solid var(--blue-pale);border-radius:12px;padding:20px;">
+          <div style="font-size:24px;font-weight:700;color:var(--navy);">Estudante</div>
+          <div style="font-size:20px;color:var(--slate);margin-top:8px;">Login → Escolhe turma → Chat IA · Chamados · Moedas</div>
+        </div>
+
+        <div style="text-align:center;font-size:24px;color:var(--blue-soft);">&#8597;</div>
+
+        <div style="background:rgba(36,96,167,.08);border:2px solid rgba(36,96,167,.25);border-radius:12px;padding:20px;">
+          <div style="font-size:24px;font-weight:700;color:var(--navy);">API Gateway + Lambda</div>
+          <div style="font-size:20px;color:var(--slate);margin-top:8px;">Auth Cognito · Serviços de turmas, UCs, chamados, moedas</div>
+        </div>
+
+        <div style="text-align:center;font-size:24px;color:var(--blue-soft);">&#8597;</div>
+
+        <div style="background:var(--blue-wash);border:2px solid var(--blue-pale);border-radius:12px;padding:20px;">
+          <div style="font-size:24px;font-weight:700;color:var(--navy);">Bedrock + OpenSearch</div>
+          <div style="font-size:20px;color:var(--slate);margin-top:8px;">Claude 3 · RAG sobre PDFs · Guardrails ativos</div>
+        </div>
+
+        <div style="text-align:center;font-size:24px;color:var(--blue-soft);">&#8597;</div>
+
+        <div style="background:rgba(36,96,167,.08);border:2px solid rgba(36,96,167,.25);border-radius:12px;padding:20px;">
+          <div style="font-size:24px;font-weight:700;color:var(--navy);">RDS PostgreSQL · S3 · EventBridge</div>
+          <div style="font-size:20px;color:var(--slate);margin-top:8px;">Dados, PDFs, histórico, timer de chamados (4 h)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<!-- SLIDE 4 -->
+<div class="slide">
+  <div class="title-band">
+    <span class="slide-label">Arquitetura AWS · us-east-1</span>
+    <h2>Diagrama da plataforma — 16 serviços</h2>
+  </div>
+  <div class="body-area full" style="flex:1; min-height:0;">
+    <div class="body-left" style="flex:1; min-height:0;">
+      <div class="visual-wrap" style="flex:1; min-height:0; background:#fff;">
+        <img
+          src="diagrama.png"
+          alt="Diagrama de arquitetura AWS — plataforma educacional"
+          style="max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; display:block;"
+        >
+      </div>
+      <p style="font-size:16px;color:var(--muted);text-align:center;margin-top:5px;">
+        Arquitetura AWS · us-east-1 · 16 serviços · ícones oficiais AWS Architecture Icons
+      </p>
+    </div>
+  </div>
+ 
+</div>
+
+<!-- SLIDE 5 -->
+<div class="slide">
+  <div class="title-band">
+    <span class="slide-label">Decisões de arquitetura</span>
+    <h2>Nossa escolha vs. alternativas consideradas</h2>
+  </div>
+  <div class="body-area" style="flex:1;">
+    <div class="body-left">
+      <div class="compare-col chosen" style="flex:1;">
+        <div class="col-head">
+          <span class="col-pill our">Nossa escolha</span>
+          <h4>Stack adotada e justificativa</h4>
+        </div>
+        <div class="compare-row"><div class="dot dot-our"></div><p><strong>Bedrock + Guardrails</strong> — LLM na AWS, bloqueio nativo de código pronto.</p></div>
+        <div class="compare-row"><div class="dot dot-our"></div><p><strong>OpenSearch Serverless</strong> — índice vetorial que escala com o volume de PDFs.</p></div>
+        <div class="compare-row"><div class="dot dot-our"></div><p><strong>Lambda + Drizzle ORM</strong> — custo estritamente por uso; zero em feriados/madrugada.</p></div>
+        <div class="compare-row"><div class="dot dot-our"></div><p><strong>RDS PostgreSQL</strong> — JSONB para histórico de chat, RLS para isolamento por turma.</p></div>
+        <div class="compare-row"><div class="dot dot-our"></div><p><strong>EventBridge Scheduler</strong> — cron serverless para devolver chamados expirados (4 h).</p></div>
+      </div>
+    </div>
+    <div class="body-right">
+      <div class="compare-col alt" style="flex:1;">
+        <div class="col-head">
+          <span class="col-pill theirs">Alternativa</span>
+          <h4>Por que foi descartada</h4>
+        </div>
+        <div class="compare-row"><div class="dot dot-alt"></div><p><strong>OpenAI API</strong> — dados saem da AWS; sem Guardrails nativos; custo imprevisível.</p></div>
+        <div class="compare-row"><div class="dot dot-alt"></div><p><strong>Pinecone / Weaviate</strong> — adiciona latência e um terceiro no fluxo dos alunos.</p></div>
+        <div class="compare-row"><div class="dot dot-alt"></div><p><strong>EC2 + Express.js</strong> — instância 24/7; custo fixo e maior overhead operacional.</p></div>
+        <div class="compare-row"><div class="dot dot-alt"></div><p><strong>MongoDB Atlas</strong> — custo fora da AWS; JSONB no PostgreSQL já cobre o cenário.</p></div>
+        <div class="compare-row"><div class="dot dot-alt"></div><p><strong>Worker ECS com cron</strong> — container ativo; EventBridge já é nativo e sem custo fixo.</p></div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<!-- SLIDE 6 -->
+<div class="slide">
+  <div class="title-band">
+    <span class="slide-label">Fechamento</span>
+    <h2>Números, custo estimado e próximos passos</h2>
+  </div>
+  <div class="close-grid" style="flex:1;">
+    <div class="close-block" style="border-top-color:var(--blue-mid);">
+      <div class="bl">Números do projeto</div>
+      <div class="nums-row">
+        <div class="num-item"><div class="n">16</div><div class="nl">Serviços AWS</div></div>
+        <div class="num-item"><div class="n">5</div><div class="nl">Telas</div></div>
+        <div class="num-item"><div class="n">2</div><div class="nl">Perfis</div></div>
+      </div>
+      <div class="nums-row" style="margin-top:20px;">
+        <div class="num-item"><div class="n">4h</div><div class="nl">Timer p/ chamado</div></div>
+        <div class="num-item"><div class="n">0</div><div class="nl">Código gerado</div></div>
+        <div class="num-item"><div class="n">26</div><div class="nl">Testes auto.</div></div>
+      </div>
+    </div>
+    <div class="close-block" style="border-top-color:var(--blue-soft);">
+      <div class="bl">Custo estimado · 100 alunos/mês</div>
+      <ul>
+        <li>Bedrock Claude 3 Haiku — <strong>~$2–5</strong></li>
+        <li>Lambda + API Gateway — <strong>~$1–3</strong></li>
+        <li>RDS PostgreSQL t3.micro — <strong>~$30</strong></li>
+        <li>OpenSearch Serverless — <strong>~$10–20</strong></li>
+        <li>S3 + EventBridge + Cognito — <strong>~$2–5</strong></li>
+        <li style="border-top:2px solid var(--blue-pale);padding-top:10px;margin-top:10px;"><strong>Total estimado: ~$50–65 / mês</strong></li>
+      </ul>
+    </div>
+    <div class="close-block" style="border-top-color:var(--blue-dark);">
+      <div class="bl">Próximos passos</div>
+      <ul>
+        <li>Scaffold do monorepo Turborepo</li>
+        <li>Schema Drizzle + migrações RDS</li>
+        <li>Auth flow Cognito + telas Iniciais</li>
+        <li>Integração Bedrock + RAG c/ PDF</li>
+        <li>MVP do sistema de chamados (4 h)</li>
+        <li>Deploy AWS CDK em us-east-1</li>
+      </ul>
+    </div>
+  </div>
+  
+</div>
+
+</body>
+</html>

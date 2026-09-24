@@ -1,6 +1,4 @@
 __pycache__/
 .pytest_cache/
 .venv/
-saida/*
-!saida/.gitkeep
 lixo/
